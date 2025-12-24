@@ -1,184 +1,253 @@
 :root {
-  --bg:#050505;
-  --text:#fff;
-  --primary:#ff4d4d;
-  --sidebar:260px;
+  --primary: #ff4d4d;
+  --sidebar: 260px;
 }
 
-* { box-sizing:border-box; }
+/* ================= GLOBAL BACKGROUND ================= */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.85)),
+    url("../images/background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  z-index: -2;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: -1;
+}
+
+/* ================= BASE ================= */
+* {
+  box-sizing: border-box;
+}
 
 body {
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Inter',sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  color: #fff;
 }
 
-.hidden { display:none!important; }
+.hidden {
+  display: none !important;
+}
 
-/* IMAGES */
 img {
-  max-width:100%;
-  height:auto;
-  display:block;
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
+/* ================= LOGOS ================= */
 .main-logo {
-  width:160px;
-  margin:0 auto 20px;
+  width: 160px;
+  margin: 0 auto 20px;
 }
 
 .sidebar-logo {
-  width:120px;
-  margin:0 auto 30px;
+  width: 120px;
+  margin: 0 auto 30px;
 }
 
-/* TYPOGRAPHY */
+/* ================= TYPOGRAPHY ================= */
 .brand-title {
-  font-family:'Metal Mania',cursive;
-  font-size:clamp(2.5rem,6vw,4rem);
-  text-align:center;
+  font-family: 'Metal Mania', cursive;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  text-align: center;
+  letter-spacing: 2px;
 }
 
 .tagline {
-  text-align:center;
-  color:#aaa;
-  margin-bottom:30px;
+  text-align: center;
+  color: #aaa;
+  margin-bottom: 30px;
 }
 
-/* LAYOUT */
+/* Readability over artwork */
+h1, h2, h3, p, label {
+  text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+}
+
+/* ================= LAYOUT ================= */
 .layout {
-  padding:40px 20px;
+  padding: 40px 20px;
 }
 
-@media(min-width:900px){
+/* IMPORTANT:
+   No forced sidebar on desktop anymore
+*/
+@media (min-width: 900px) {
   .layout {
-    margin-left:var(--sidebar);
-    padding:60px;
+    padding: 60px;
   }
 }
 
-/* SIDEBAR */
-.sidebar {
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:var(--sidebar);
-  height:100vh;
-  background:#000;
-  padding:30px;
-  transition:0.3s;
-  z-index:1000;
-}
-
-.sidebar.active {
-  left:0;
-}
-
-@media(min-width:900px){
-  .sidebar { left:0; }
-  .hamburger-icon { display:none; }
-  .overlay { display:none!important; }
-}
-
-.sidebar ul { list-style:none; padding:0; }
-.sidebar li {
-  padding:12px 0;
-  cursor:pointer;
-}
-
-/* HAMBURGER */
-.hamburger-icon {
-  position:fixed;
-  top:20px;
-  left:20px;
-  width:44px;
-  height:44px;
-  background:#000;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  gap:6px;
-  z-index:1100;
-}
-
-.hamburger-icon span {
-  height:2px;
-  background:#fff;
-}
-
-/* OVERLAY */
-.overlay {
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.7);
-  display:none;
-}
-
-.overlay.active { display:block; }
-
-/* CONTAINERS */
+/* ================= CONTAINERS ================= */
 .container {
-  max-width:720px;
-  margin:auto;
+  max-width: 720px;
+  margin: auto;
+  padding: 24px;
+  background: transparent;
 }
 
 .admin-wide {
-  max-width:1200px;
+  max-width: 1200px;
 }
 
-/* FORMS */
-input, textarea, button {
-  width:100%;
-  padding:14px;
-  margin-bottom:12px;
-  background:#000;
-  color:#fff;
-  border:1px solid #333;
-  border-radius:12px;
+/* ================= SIDEBAR ================= */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;              /* hidden by default */
+  width: var(--sidebar);
+  height: 100vh;
+  background: rgba(0,0,0,0.95);
+  padding: 30px;
+  transition: left 0.3s ease;
+  z-index: 1000;
 }
 
-textarea { min-height:140px; }
+.sidebar.active {
+  left: 0;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.sidebar li:hover {
+  color: var(--primary);
+}
+
+.sidebar .icon {
+  font-size: 1.2rem;
+  filter: drop-shadow(0 0 4px rgba(255,255,255,0.4));
+}
+
+/* ================= HAMBURGER (TRANSPARENT) ================= */
+.hamburger-icon {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  z-index: 1100;
+}
+
+.hamburger-icon span {
+  height: 2px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(255,255,255,0.4);
+}
+
+/* ================= OVERLAY ================= */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  z-index: 900;
+}
+
+.overlay.active {
+  display: block;
+}
+
+/* ================= FORMS ================= */
+input,
+textarea,
+button {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  color: #fff;
+}
+
+input,
+textarea {
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+}
+
+textarea {
+  min-height: 140px;
+}
 
 button {
-  background:var(--primary);
-  border:none;
-  cursor:pointer;
-  transition:transform .2s, box-shadow .2s;
+  background: var(--primary);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 button:hover {
-  transform:translateY(-2px);
-  box-shadow:0 10px 20px rgba(0,0,0,.4);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
 }
 
-/* ROW */
+/* ================= ROW ================= */
 .row {
-  display:flex;
-  gap:10px;
+  display: flex;
+  gap: 10px;
 }
 
-@media(max-width:600px){
-  .row { flex-direction:column; }
+@media (max-width: 600px) {
+  .row {
+    flex-direction: column;
+  }
 }
 
-/* ADMIN GRID */
+/* ================= ADMIN GRID ================= */
 .admin-grid {
-  display:grid;
-  gap:20px;
+  display: grid;
+  gap: 20px;
 }
 
-@media(min-width:768px){
-  .admin-grid { grid-template-columns:repeat(2,1fr); }
+@media (min-width: 768px) {
+  .admin-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-@media(min-width:1200px){
-  .admin-grid { grid-template-columns:repeat(3,1fr); }
+@media (min-width: 1200px) {
+  .admin-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
-/* CARDS */
+/* ================= CARDS ================= */
 .booking-card {
-  background:#111;
-  padding:16px;
-  border-radius:12px;
+  padding: 16px;
+  background: rgba(0,0,0,0.55);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
 }

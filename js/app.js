@@ -1,24 +1,14 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
-  getAuth,
-  signInWithEmailAndPassword,
+  getAuth, signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut
+  onAuthStateChanged, signOut
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 import {
-  getFirestore,
-  doc,
-  setDoc,
-  getDoc,
-  addDoc,
-  collection,
-  getDocs,
-  query,
-  where,
-  orderBy,
-  updateDoc
+  getFirestore, doc, setDoc, getDoc,
+  addDoc, collection, getDocs,
+  query, where, orderBy, updateDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 /* FIREBASE */
@@ -37,7 +27,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* DOM */
+/* VIEWS */
 const views = {
   landing: landingView,
   auth: authView,
@@ -49,22 +39,16 @@ const views = {
   calendar: calendarView
 };
 
+const menuBtn = document.getElementById("menuBtn");
 const sidebar = document.getElementById("sidebar");
 const overlay = document.getElementById("overlay");
-const menuBtn = document.getElementById("menuBtn");
 
-/* UI HELPERS */
-function hideAll() {
-  Object.values(views).forEach(v => v.classList.add("hidden"));
-}
-
-function closeMenu() {
-  sidebar.classList.remove("active");
-  overlay.classList.remove("active");
-}
+/* MENU HELPERS */
+function showMenu() { menuBtn.classList.remove("hidden"); }
+function hideMenu() { menuBtn.classList.add("hidden"); }
 
 menuBtn.onclick = () => toggleMenu();
-overlay.onclick = closeMenu;
+overlay.onclick = () => toggleMenu();
 
 window.toggleMenu = () => {
   sidebar.classList.toggle("active");
@@ -73,7 +57,7 @@ window.toggleMenu = () => {
 
 /* NAVIGATION */
 window.navigate = (view) => {
-  hideAll();
+  Object.values(views).forEach(v => v.classList.add("hidden"));
 
   if (view === "booking") views.booking.classList.remove("hidden");
   if (view === "history") {
@@ -89,7 +73,8 @@ window.navigate = (view) => {
     if (view === "calendar") renderCalendar();
   }
 
-  closeMenu();
+  sidebar.classList.remove("active");
+  overlay.classList.remove("active");
 };
 
 document.querySelectorAll("[data-nav]").forEach(el => {
@@ -98,13 +83,13 @@ document.querySelectorAll("[data-nav]").forEach(el => {
 
 /* LANDING */
 startBooking.onclick = () => {
-  hideAll();
+  Object.values(views).forEach(v => v.classList.add("hidden"));
+  hideMenu();
   views.auth.classList.remove("hidden");
 };
 
 /* AUTH */
 let signup = false;
-
 toggleAuth.onclick = () => {
   signup = !signup;
   document.querySelectorAll(".auth-extra").forEach(e => e.classList.toggle("hidden"));
@@ -113,8 +98,6 @@ toggleAuth.onclick = () => {
 
 authForm.onsubmit = async e => {
   e.preventDefault();
-  authError.classList.add("hidden");
-
   try {
     if (signup) {
       const res = await createUserWithEmailAndPassword(auth, email.value, password.value);
@@ -134,18 +117,18 @@ authForm.onsubmit = async e => {
 };
 
 /* AUTH STATE */
-onAuthStateChanged(auth, async (user) => {
-  hideAll();
+onAuthStateChanged(auth, async user => {
+  Object.values(views).forEach(v => v.classList.add("hidden"));
   document.querySelectorAll(".user-link,.admin-link,.auth-required")
     .forEach(el => el.classList.add("hidden"));
 
   if (!user) {
-    menuBtn.classList.add("hidden");
+    hideMenu();
     views.landing.classList.remove("hidden");
     return;
   }
 
-  menuBtn.classList.remove("hidden");
+  showMenu();
   const snap = await getDoc(doc(db, "users", user.uid));
   const role = snap.data()?.role;
 
@@ -166,10 +149,9 @@ onAuthStateChanged(auth, async (user) => {
 /* LOGOUT */
 logoutBtn.onclick = async () => {
   await signOut(auth);
-  hideAll();
-  menuBtn.classList.add("hidden");
+  hideMenu();
+  Object.values(views).forEach(v => v.classList.add("hidden"));
   views.landing.classList.remove("hidden");
-  closeMenu();
 };
 
 /* PROFILE */
@@ -185,14 +167,11 @@ profileForm.onsubmit = async e => {
     name: editName.value,
     phone: editPhone.value
   });
-  profileMsg.classList.remove("hidden");
-  setTimeout(() => profileMsg.classList.add("hidden"), 2000);
 };
 
 /* BOOKING */
 bookingForm.onsubmit = async e => {
   e.preventDefault();
-  submitBtn.disabled = true;
 
   const clash = await getDocs(query(
     collection(db, "bookings"),
@@ -203,7 +182,6 @@ bookingForm.onsubmit = async e => {
 
   if (!clash.empty) {
     alert("Slot already booked");
-    submitBtn.disabled = false;
     return;
   }
 
@@ -211,10 +189,10 @@ bookingForm.onsubmit = async e => {
   if (refImage.files[0]) {
     const fd = new FormData();
     fd.append("image", refImage.files[0]);
-    const res = await fetch(
-      `https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`,
-      { method: "POST", body: fd }
-    );
+    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+      method: "POST",
+      body: fd
+    });
     imageUrl = (await res.json()).data.display_url;
   }
 
@@ -230,7 +208,6 @@ bookingForm.onsubmit = async e => {
   });
 
   bookingForm.reset();
-  submitBtn.disabled = false;
 };
 
 /* HISTORY */

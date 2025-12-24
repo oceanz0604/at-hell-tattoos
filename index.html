@@ -26,14 +26,16 @@
   <img src="./images/logo.png" class="sidebar-logo" />
 
   <ul>
-    <li class="user-link hidden" data-nav="booking">Book Session</li>
-    <li class="user-link hidden" data-nav="history">My History</li>
-    <li class="user-link hidden" data-nav="profile">Edit Profile</li>
+    <li class="user-link hidden" data-nav="booking"><span class="icon">🖋️</span> Book Session</li>
+    <li class="user-link hidden" data-nav="history"><span class="icon">📜</span> My History</li>
+    <li class="user-link hidden" data-nav="profile"><span class="icon">👤</span> Edit Profile</li>
 
-    <li class="admin-link hidden" data-nav="list">Requests</li>
-    <li class="admin-link hidden" data-nav="calendar">Calendar</li>
+    <li class="admin-link hidden" data-nav="list"><span class="icon">🛠️</span> Requests</li>
+    <li class="admin-link hidden" data-nav="calendar"><span class="icon">📅</span> Calendar</li>
 
-    <li class="auth-required hidden logout" id="logoutBtn">Logout</li>
+    <li class="auth-required hidden logout" id="logoutBtn">
+      <span class="icon">🚪</span> Logout
+    </li>
   </ul>
 </nav>
 
@@ -46,7 +48,7 @@
     <img src="./images/logo.png" class="main-logo" />
     <h1 class="brand-title">A.T HELL TATTOOS</h1>
     <p class="tagline">Elite Custom Tattoo Studio</p>
-    <button class="btn-primary" id="startBooking">Book Appointment</button>
+    <button id="startBooking">Book Appointment</button>
   </section>
 
   <!-- AUTH -->
@@ -84,7 +86,7 @@
     </form>
   </section>
 
-  <!-- HISTORY (SEPARATE VIEW) -->
+  <!-- HISTORY -->
   <section id="historyView" class="container hidden">
     <h2>My Booking History</h2>
     <div id="userList"></div>
@@ -98,7 +100,7 @@
       <input id="editPhone" placeholder="Phone Number" required />
       <button>Update</button>
     </form>
-    <p id="profileMsg" class="success hidden">Profile Updated</p>
+    <p id="profileMsg" class="hidden">Profile Updated</p>
   </section>
 
   <!-- ADMIN -->
