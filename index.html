@@ -1,142 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A.T Hell Tattoos | Professional Custom Ink & Booking</title>
-    <meta name="description" content="A.T Hell Tattoos - Professional tattoo studio booking portal. View history and request custom sessions.">
-    <link rel="stylesheet" href="./css/style.css">
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>A.T Hell Tattoos | Booking</title>
+
+  <!-- GOOGLE FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
 </head>
 <body>
 
-    <button id="menuBtn" class="hamburger-icon hidden" onclick="toggleMenu()">
-        <span></span><span></span><span></span>
-    </button>
+<!-- HAMBURGER -->
+<button id="menuBtn" class="hamburger-icon hidden" aria-label="Menu">
+  <span></span><span></span><span></span>
+</button>
 
-    <nav id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <img src="./images/logo.png" alt="Logo" class="sidebar-logo">
-        </div>
-        <ul class="nav-links">
-            <li class="user-link hidden">
-                <a href="#" onclick="navigate('booking')">
-                    <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    Book Session
-                </a>
-            </li>
-            <li class="user-link hidden">
-                <a href="#" onclick="navigate('history')">
-                    <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    My History
-                </a>
-            </li>
-            <li class="user-link hidden">
-                <a href="#" onclick="navigate('profile')">
-                    <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    Edit Profile
-                </a>
-            </li>
-            <li class="admin-link hidden">
-                <a href="#" onclick="navigate('list')">
-                    <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-                    Requests
-                </a>
-            </li>
-            <li class="admin-link hidden">
-                <a href="#" onclick="navigate('calendar')">
-                    <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                    Calendar
-                </a>
-            </li>
-            <li class="auth-required hidden"><hr class="nav-divider"></li>
-            <li class="auth-required hidden">
-                <a href="#" onclick="logout()" class="logout-link">
-                    <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                    Logout
-                </a>
-            </li>
-        </ul>
-    </nav>
+<!-- SIDEBAR -->
+<nav id="sidebar" class="sidebar">
+  <img src="./images/logo.png" class="sidebar-logo" />
 
-    <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
+  <ul>
+    <li class="user-link hidden" data-nav="booking">Book Session</li>
+    <li class="user-link hidden" data-nav="history">My History</li>
+    <li class="user-link hidden" data-nav="profile">Edit Profile</li>
 
-    <a href="https://wa.me/917028122789" class="whatsapp-float" target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA">
-    </a>
+    <li class="admin-link hidden" data-nav="list">Requests</li>
+    <li class="admin-link hidden" data-nav="calendar">Calendar</li>
 
-    <main id="mainContent">
-        <div id="landingView" class="container auth-centered hidden">
-            <div class="brand-area">
-                <img src="./images/logo.png" alt="Logo" class="main-logo">
-                <h1>A.T HELL TATTOOS</h1>
-                <p style="color:var(--text-dim); margin-bottom: 25px;">Elite Custom Artistry & Body Modification</p>
-                <button onclick="showLogin()" class="btn-primary">BOOK APPOINTMENT</button>
-            </div>
-            <div style="margin-top: 30px; font-size: 0.8rem; color: var(--text-dim);">
-                <p>Licensed Studio | Custom Design | High-End Hygiene</p>
-            </div>
-        </div>
+    <li class="auth-required hidden logout" id="logoutBtn">Logout</li>
+  </ul>
+</nav>
 
-        <div id="authView" class="container auth-centered hidden">
-            <div class="brand-area">
-                <h2 id="authTitle">STUDIO LOGIN</h2>
-            </div>
-            <div id="authError" class="error-msg hidden"></div>
-            <form id="authForm">
-                <input type="text" id="regName" placeholder="Full Name" class="auth-extra hidden">
-                <input type="tel" id="regPhone" placeholder="Phone Number" class="auth-extra hidden">
-                <input type="email" id="email" placeholder="Email Address" required>
-                <input type="password" id="password" placeholder="Password" required>
-                <button type="submit" id="authBtn">Enter Studio</button>
-            </form>
-            <p id="toggleAuth" class="toggle-text" onclick="toggleAuthMode()">
-                New to the crew? <span>Sign Up</span>
-            </p>
-        </div>
+<div id="overlay" class="overlay"></div>
 
-        <div id="bookingView" class="container hidden">
-            <header><h2>New Request</h2></header>
-            <form id="bookingForm">
-                <textarea id="idea" placeholder="Describe placement, size, and style..." required></textarea>
-                <label>Reference Photo</label>
-                <input type="file" id="refImage" accept="image/*">
-                <div class="row">
-                    <div class="col"><label>Date</label><input type="date" id="date" required></div>
-                    <div class="col"><label>Time</label><input type="time" id="time" required></div>
-                </div>
-                <button type="submit" id="submitBtn">Submit Project</button>
-            </form>
-            <div id="userHistoryView" class="hidden">
-                <h3 style="margin-top:30px; border-top:1px solid #333; padding-top:20px;">Your History</h3>
-                <div id="userList"></div>
-            </div>
-        </div>
+<main class="layout">
 
-        <div id="profileView" class="container hidden">
-            <header><h2>Edit Profile</h2></header>
-            <div id="profileMsg" class="success-msg hidden">Profile Updated!</div>
-            <form id="profileForm">
-                <label>Full Name</label><input type="text" id="editName" required>
-                <label>Phone Number</label><input type="tel" id="editPhone" required>
-                <button type="submit">Update Info</button>
-            </form>
-        </div>
+  <!-- LANDING -->
+  <section id="landingView" class="container auth-centered">
+    <img src="./images/logo.png" class="main-logo" />
+    <h1 class="brand-title">A.T HELL TATTOOS</h1>
+    <p class="tagline">Elite Custom Tattoo Studio</p>
+    <button class="btn-primary" id="startBooking">Book Appointment</button>
+  </section>
 
-        <div id="adminView" class="container admin-wide hidden">
-            <div id="listView">
-                <header><h2>Artist Dashboard</h2></header>
-                <div id="adminListView" class="admin-grid"></div>
-            </div>
-            <div id="calendarView" class="hidden"><div id="calendar"></div></div>
-        </div>
-    </main>
+  <!-- AUTH -->
+  <section id="authView" class="container auth-centered hidden">
+    <h2 id="authTitle">STUDIO LOGIN</h2>
+    <div id="authError" class="error hidden"></div>
 
-    <footer style="text-align: center; padding: 40px 20px; color: #444; font-size: 0.75rem; border-top: 1px solid #111;">
-        <p>&copy; 2025 A.T Hell Tattoos | Mob: +91 70281 22789</p>
-        <p>Verified Professional Artist Portal</p>
-    </footer>
+    <form id="authForm">
+      <input id="regName" class="auth-extra hidden" placeholder="Full Name" />
+      <input id="regPhone" class="auth-extra hidden" placeholder="Phone Number" />
+      <input id="email" required placeholder="Email" />
+      <input id="password" type="password" required placeholder="Password" />
+      <button id="authBtn">Enter Studio</button>
+    </form>
 
-    <script type="module" src="./js/app.js"></script>
+    <p class="toggle" id="toggleAuth">
+      New here? <span>Sign Up</span>
+    </p>
+  </section>
+
+  <!-- BOOKING -->
+  <section id="bookingView" class="container hidden">
+    <h2>New Tattoo Request</h2>
+
+    <form id="bookingForm">
+      <textarea id="idea" required placeholder="Describe your tattoo idea..."></textarea>
+      <input type="file" id="refImage" accept="image/*" />
+
+      <div class="row">
+        <input type="date" id="date" required />
+        <input type="time" id="time" required />
+      </div>
+
+      <button id="submitBtn">Submit Request</button>
+    </form>
+  </section>
+
+  <!-- HISTORY (SEPARATE VIEW) -->
+  <section id="historyView" class="container hidden">
+    <h2>My Booking History</h2>
+    <div id="userList"></div>
+  </section>
+
+  <!-- PROFILE -->
+  <section id="profileView" class="container hidden">
+    <h2>Edit Profile</h2>
+    <form id="profileForm">
+      <input id="editName" placeholder="Full Name" required />
+      <input id="editPhone" placeholder="Phone Number" required />
+      <button>Update</button>
+    </form>
+    <p id="profileMsg" class="success hidden">Profile Updated</p>
+  </section>
+
+  <!-- ADMIN -->
+  <section id="adminView" class="container admin-wide hidden">
+    <div id="listView">
+      <h2>Admin Requests</h2>
+      <div id="adminListView" class="admin-grid"></div>
+    </div>
+
+    <div id="calendarView" class="hidden">
+      <div id="calendar"></div>
+    </div>
+  </section>
+
+</main>
+
+<script type="module" src="./js/app.js"></script>
 </body>
 </html>
