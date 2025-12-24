@@ -52,21 +52,32 @@
   </section>
 
   <!-- AUTH -->
-  <section id="authView" class="container auth-centered hidden">
-    <h2 id="authTitle">STUDIO LOGIN</h2>
-    <div id="authError" class="error hidden"></div>
+  <section id="authView" class="auth-screen hidden">
+    <div class="auth-card">
 
-    <form id="authForm">
-      <input id="regName" class="auth-extra hidden" placeholder="Full Name" />
-      <input id="regPhone" class="auth-extra hidden" placeholder="Phone Number" />
-      <input id="email" required placeholder="Email" />
-      <input id="password" type="password" required placeholder="Password" />
-      <button id="authBtn">Enter Studio</button>
-    </form>
+      <img src="./images/logo.png" class="auth-logo" />
 
-    <p class="toggle" id="toggleAuth">
-      New here? <span>Sign Up</span>
-    </p>
+      <h2 id="authTitle" class="auth-title">STUDIO LOGIN</h2>
+      <p class="auth-subtitle">Enter the underworld</p>
+
+      <div id="authError" class="auth-error hidden"></div>
+
+      <form id="authForm" class="auth-form">
+        <input id="regName" class="auth-extra hidden" placeholder="Full Name" />
+        <input id="regPhone" class="auth-extra hidden" placeholder="Phone Number" />
+
+        <input id="email" type="email" placeholder="Email address" required />
+        <input id="password" type="password" placeholder="Password" required />
+
+        <button id="authBtn" class="auth-submit">
+          Enter Studio
+        </button>
+      </form>
+
+      <p class="auth-toggle" id="toggleAuth">
+        <span id="authToggleText">New here? Create an account</span>
+      </p>
+    </div>
   </section>
 
   <!-- BOOKING -->
@@ -116,6 +127,19 @@
   </section>
 
 </main>
+
+<!-- LOGOUT CONFIRMATION MODAL -->
+<div id="logoutModal" class="modal-overlay hidden">
+  <div class="modal">
+    <h3>Log out?</h3>
+    <p>Are you sure you want to log out?</p>
+
+    <div class="modal-buttons">
+      <button id="cancelLogout" type="button">Cancel</button>
+      <button id="confirmLogout" type="button">Logout</button>
+    </div>
+  </div>
+</div>
 
 <script type="module" src="./js/app.js"></script>
 </body>

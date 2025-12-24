@@ -1,17 +1,27 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
-  getAuth, signInWithEmailAndPassword,
+  getAuth,
+  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  onAuthStateChanged, signOut
+  onAuthStateChanged,
+  signOut
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 import {
-  getFirestore, doc, setDoc, getDoc,
-  addDoc, collection, getDocs,
-  query, where, orderBy, updateDoc
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  addDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* FIREBASE */
+/* ================= FIREBASE ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyBwdm22I80Cau2t7BNYJf1jQsLixA_c3ww",
   authDomain: "at-hell-tattoo.firebaseapp.com",
@@ -27,7 +37,20 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* VIEWS */
+/* ================= SHARED STATE ================= */
+let adminCache = [];
+
+/* ================= DOM ================= */
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+
+const logoutBtn = document.getElementById("logoutBtn");
+const logoutModal = document.getElementById("logoutModal");
+const cancelLogout = document.getElementById("cancelLogout");
+const confirmLogout = document.getElementById("confirmLogout");
+
+/* ================= VIEWS ================= */
 const views = {
   landing: landingView,
   auth: authView,
@@ -39,65 +62,99 @@ const views = {
   calendar: calendarView
 };
 
-const menuBtn = document.getElementById("menuBtn");
-const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
-
-/* MENU HELPERS */
-function showMenu() { menuBtn.classList.remove("hidden"); }
-function hideMenu() { menuBtn.classList.add("hidden"); }
-function closeSidebar() {
-  sidebar.classList.remove("active");
-  overlay.classList.remove("active");
+/* ================= HELPERS ================= */
+function show(el) {
+  if (el) el.classList.remove("hidden");
 }
 
-menuBtn.onclick = () => toggleMenu();
-overlay.onclick = () => closeSidebar();
+function hide(el) {
+  if (el) el.classList.add("hidden");
+}
 
-window.toggleMenu = () => {
+function hideAllViews() {
+  Object.values(views).forEach(v => {
+    if (v) v.classList.add("hidden");
+  });
+}
+
+function showMenu() {
+  menuBtn?.classList.remove("hidden");
+}
+
+function hideMenu() {
+  menuBtn?.classList.add("hidden");
+}
+
+function closeSidebar() {
+  sidebar?.classList.remove("active");
+  overlay?.classList.remove("active");
+}
+
+/* ================= SIDEBAR ================= */
+menuBtn?.addEventListener("click", () => {
   sidebar.classList.toggle("active");
   overlay.classList.toggle("active");
-};
-
-/* NAVIGATION */
-window.navigate = (view) => {
-  Object.values(views).forEach(v => v.classList.add("hidden"));
-
-  if (view === "booking") views.booking.classList.remove("hidden");
-  if (view === "history") {
-    views.history.classList.remove("hidden");
-    loadUser(auth.currentUser.email);
-  }
-  if (view === "profile") views.profile.classList.remove("hidden");
-
-  if (view === "list" || view === "calendar") {
-    views.admin.classList.remove("hidden");
-    views.list.classList.toggle("hidden", view !== "list");
-    views.calendar.classList.toggle("hidden", view !== "calendar");
-    if (view === "calendar") renderCalendar();
-  }
-
-  sidebar.classList.remove("active");
-  overlay.classList.remove("active");
-};
-
-document.querySelectorAll("[data-nav]").forEach(el => {
-  el.onclick = () => navigate(el.dataset.nav);
 });
 
-/* LANDING */
-startBooking.onclick = () => {
-  Object.values(views).forEach(v => v.classList.add("hidden"));
-  hideMenu();
-  views.auth.classList.remove("hidden");
+overlay?.addEventListener("click", closeSidebar);
+
+/* ================= NAVIGATION ================= */
+document.querySelectorAll("[data-nav]").forEach(el => {
+  el.addEventListener("click", () => navigate(el.dataset.nav));
+});
+
+window.navigate = (view) => {
+  hideAllViews();
+
+  if (view === "booking") show(views.booking);
+
+  if (view === "history") {
+    show(views.history);
+    loadUser(auth.currentUser.email);
+  }
+
+  if (view === "profile") show(views.profile);
+
+  if (view === "list" || view === "calendar") {
+    show(views.admin);
+
+    if (views.list) {
+      views.list.classList.toggle("hidden", view !== "list");
+    }
+
+    if (views.calendar) {
+      views.calendar.classList.toggle("hidden", view !== "calendar");
+    }
+
+    if (view === "calendar" && views.calendar) {
+      renderCalendar();
+    }
+  }
+
+  closeSidebar();
 };
 
-/* AUTH */
+/* ================= LANDING ================= */
+startBooking.onclick = () => {
+  hideAllViews();
+  hideMenu();
+  show(views.auth);
+};
+
+/* ================= AUTH ================= */
 let signup = false;
+
 toggleAuth.onclick = () => {
   signup = !signup;
-  document.querySelectorAll(".auth-extra").forEach(e => e.classList.toggle("hidden"));
-  authTitle.textContent = signup ? "SIGN UP" : "STUDIO LOGIN";
+
+  document.querySelectorAll(".auth-extra")
+    .forEach(e => e.classList.toggle("hidden"));
+
+  authTitle.textContent = signup ? "CREATE ACCOUNT" : "STUDIO LOGIN";
+
+  authToggleText.textContent = signup
+    ? "Already have an account? Login"
+    : "New here? Create an account";
 };
 
 authForm.onsubmit = async e => {
@@ -120,47 +177,58 @@ authForm.onsubmit = async e => {
   }
 };
 
-/* AUTH STATE */
+/* ================= AUTH STATE ================= */
 onAuthStateChanged(auth, async user => {
-  Object.values(views).forEach(v => v.classList.add("hidden"));
+  hideAllViews();
+  closeSidebar();
+
   document.querySelectorAll(".user-link,.admin-link,.auth-required")
     .forEach(el => el.classList.add("hidden"));
 
   if (!user) {
-    closeSidebar();
     hideMenu();
-    views.landing.classList.remove("hidden");
+    show(views.landing);
     return;
   }
 
   showMenu();
+
   const snap = await getDoc(doc(db, "users", user.uid));
   const role = snap.data()?.role;
 
   if (role === "admin") {
     document.querySelectorAll(".admin-link,.auth-required")
       .forEach(el => el.classList.remove("hidden"));
-    views.admin.classList.remove("hidden");
-    views.list.classList.remove("hidden");
+    show(views.admin);
+    show(views.list);
     loadAdmin();
   } else {
     document.querySelectorAll(".user-link,.auth-required")
       .forEach(el => el.classList.remove("hidden"));
-    views.booking.classList.remove("hidden");
+    show(views.booking);
     loadProfile();
   }
 });
 
-/* LOGOUT */
-logoutBtn.onclick = async () => {
-  closeSidebar();
-  await signOut(auth);
-  hideMenu();
-  Object.values(views).forEach(v => v.classList.add("hidden"));
-  views.landing.classList.remove("hidden");
-};
+/* ================= LOGOUT ================= */
+logoutBtn?.addEventListener("click", () => {
+  logoutModal.classList.remove("hidden");
+});
 
-/* PROFILE */
+cancelLogout?.addEventListener("click", () => {
+  logoutModal.classList.add("hidden");
+});
+
+confirmLogout?.addEventListener("click", async () => {
+  logoutModal.classList.add("hidden");
+  closeSidebar();
+  hideMenu();
+  await signOut(auth);
+  hideAllViews();
+  show(views.landing);
+});
+
+/* ================= PROFILE ================= */
 async function loadProfile() {
   const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
   editName.value = snap.data()?.name || "";
@@ -175,7 +243,7 @@ profileForm.onsubmit = async e => {
   });
 };
 
-/* BOOKING */
+/* ================= BOOKING ================= */
 bookingForm.onsubmit = async e => {
   e.preventDefault();
 
@@ -216,7 +284,7 @@ bookingForm.onsubmit = async e => {
   bookingForm.reset();
 };
 
-/* HISTORY */
+/* ================= HISTORY ================= */
 async function loadUser(email) {
   userList.innerHTML = "";
   const snap = await getDocs(query(collection(db, "bookings"), where("email", "==", email)));
@@ -230,9 +298,7 @@ async function loadUser(email) {
   });
 }
 
-/* ADMIN */
-let adminCache = [];
-
+/* ================= ADMIN ================= */
 async function loadAdmin() {
   adminCache = [];
   adminListView.innerHTML = "";
