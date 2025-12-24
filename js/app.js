@@ -46,9 +46,13 @@ const overlay = document.getElementById("overlay");
 /* MENU HELPERS */
 function showMenu() { menuBtn.classList.remove("hidden"); }
 function hideMenu() { menuBtn.classList.add("hidden"); }
+function closeSidebar() {
+  sidebar.classList.remove("active");
+  overlay.classList.remove("active");
+}
 
 menuBtn.onclick = () => toggleMenu();
-overlay.onclick = () => toggleMenu();
+overlay.onclick = () => closeSidebar();
 
 window.toggleMenu = () => {
   sidebar.classList.toggle("active");
@@ -123,6 +127,7 @@ onAuthStateChanged(auth, async user => {
     .forEach(el => el.classList.add("hidden"));
 
   if (!user) {
+    closeSidebar();
     hideMenu();
     views.landing.classList.remove("hidden");
     return;
@@ -148,6 +153,7 @@ onAuthStateChanged(auth, async user => {
 
 /* LOGOUT */
 logoutBtn.onclick = async () => {
+  closeSidebar();
   await signOut(auth);
   hideMenu();
   Object.values(views).forEach(v => v.classList.add("hidden"));
