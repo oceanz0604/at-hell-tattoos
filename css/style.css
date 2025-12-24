@@ -1,3 +1,8 @@
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
 :root {
   --primary: #ff4d4d;
   --sidebar: 260px;
@@ -35,7 +40,7 @@ body::after {
 
 body {
   margin: 0;
-  min-height: 100vh;
+  min-height: 100svh;
   font-family: 'Inter', sans-serif;
   color: #fff;
 }
@@ -313,7 +318,7 @@ button:hover {
 
 /* ================= AUTH SCREEN ================= */
 .auth-screen {
-  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -391,6 +396,40 @@ button:hover {
   font-weight: 300;
 }
 
+/* ===== INK UNDERLINE EFFECT ===== */
+.auth-form .field {
+  position: relative;
+}
+
+.auth-form .field::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 6px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff4d4d, transparent);
+  transform: scaleX(0);
+  transition: transform 0.25s ease;
+}
+
+.auth-form input:focus + .field-line,
+.auth-form input:focus ~ .field-line {
+  transform: scaleX(1);
+}
+
+.ink-divider {
+  width: 100%;
+  height: 28px;
+  margin: 14px 0 24px;
+  opacity: 0.85;
+}
+
+.ink-divider svg {
+  width: 100%;
+  height: 100%;
+}
+
 .auth-submit {
   margin-top: 10px;
   padding: 14px;
@@ -406,6 +445,23 @@ button:hover {
 .auth-submit:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 30px rgba(255,77,77,0.4);
+}
+
+/* ===== LOGIN SUCCESS ===== */
+.auth-success {
+  animation: inkFlash 0.6s ease forwards;
+}
+
+@keyframes inkFlash {
+  0% {
+    box-shadow: 0 0 0 rgba(255,77,77,0);
+  }
+  40% {
+    box-shadow: 0 0 60px rgba(255,77,77,0.6);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(255,77,77,0);
+  }
 }
 
 /* ================= TOGGLE ================= */
@@ -442,4 +498,583 @@ button:hover {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* ================= BOOKING SCREEN ================= */
+.booking-screen {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.booking-card {
+  width: 100%;
+  max-width: 560px;
+  padding: 32px 28px;
+
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(14px);
+
+  border-radius: 24px;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.85),
+    inset 0 0 0 1px rgba(255,255,255,0.08);
+
+  animation: fadeUp 0.4s ease;
+}
+
+.booking-title {
+  font-family: 'Metal Mania', cursive;
+  font-size: 2.2rem;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.booking-subtitle {
+  opacity: 0.8;
+  font-size: 0.95rem;
+  margin-bottom: 28px;
+}
+
+/* ================= FORM ================= */
+.booking-form label {
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  opacity: 0.85;
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* ===== DARK THEME SELECT ===== */
+.booking-form select {
+  width: 100%;
+  padding: 14px 44px 14px 16px;
+
+  background-color: rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 18px;
+
+  color: #fff;
+  font-size: 0.95rem;
+  letter-spacing: 0.4px;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-image:
+    linear-gradient(45deg, transparent 50%, #ff4d4d 50%),
+    linear-gradient(135deg, #ff4d4d 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) 52%,
+    calc(100% - 14px) 52%;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.03),
+    inset 0 -8px 20px rgba(0,0,0,0.6);
+
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* ===== FOCUS STATE ===== */
+.booking-form select:focus {
+  outline: none;
+  border-color: #ff4d4d;
+  box-shadow:
+    0 0 0 1px rgba(255,77,77,0.6),
+    0 0 20px rgba(255,77,77,0.25),
+    inset 0 -8px 20px rgba(0,0,0,0.6);
+}
+
+/* ===== DISABLED OPTIONS ===== */
+.booking-form select option:disabled {
+  color: rgba(255,255,255,0.35);
+}
+
+/* ===== DARK THEME SELECT ===== */
+.booking-form select {
+  width: 100%;
+  padding: 14px 44px 14px 16px;
+
+  background-color: rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 18px;
+
+  color: #fff;
+  font-size: 0.95rem;
+  letter-spacing: 0.4px;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-image:
+    linear-gradient(45deg, transparent 50%, #ff4d4d 50%),
+    linear-gradient(135deg, #ff4d4d 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) 52%,
+    calc(100% - 14px) 52%;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.03),
+    inset 0 -8px 20px rgba(0,0,0,0.6);
+
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* ===== FOCUS STATE ===== */
+.booking-form select:focus {
+  outline: none;
+  border-color: #ff4d4d;
+  box-shadow:
+    0 0 0 1px rgba(255,77,77,0.6),
+    0 0 20px rgba(255,77,77,0.25),
+    inset 0 -8px 20px rgba(0,0,0,0.6);
+}
+
+/* ===== DISABLED OPTIONS ===== */
+.booking-form select option:disabled {
+  color: rgba(255,255,255,0.35);
+}
+
+.form-block {
+  margin-bottom: 18px;
+}
+
+.booking-form textarea,
+.booking-form input[type="date"],
+.booking-form input[type="file"] {
+
+  width: 100%;
+  padding: 14px 16px;
+
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 18px;
+
+  color: #fff;
+  font-size: 0.95rem;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.03),
+    inset 0 -8px 20px rgba(0,0,0,0.6);
+
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.booking-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.booking-form input:focus,
+.booking-form textarea:focus {
+  outline: none;
+  border-color: #ff4d4d;
+  box-shadow:
+    0 0 0 1px rgba(255,77,77,0.6),
+    0 0 20px rgba(255,77,77,0.25),
+    inset 0 -8px 20px rgba(0,0,0,0.6);
+}
+
+/* ================= DATE/TIME ROW ================= */
+.form-row {
+  display: flex;
+  gap: 14px;
+}
+
+.form-row .form-block {
+  flex: 1;
+}
+
+/* ================= SUBMIT ================= */
+.booking-submit {
+  width: 100%;
+  margin-top: 10px;
+  padding: 16px;
+
+  font-size: 1rem;
+  font-weight: 600;
+
+  background: linear-gradient(135deg, #ff4d4d, #ff1f1f);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.booking-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(255,77,77,0.4);
+}
+
+/* ================= ANIMATION ================= */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+  }
+}
+
+/* ================= HISTORY SCREEN ================= */
+.history-screen {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.history-card {
+  width: 100%;
+  max-width: 720px;
+  padding: 32px 28px;
+
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(14px);
+
+  border-radius: 24px;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.85),
+    inset 0 0 0 1px rgba(255,255,255,0.08);
+
+  animation: fadeUp 0.4s ease;
+}
+
+.history-title {
+  font-family: 'Metal Mania', cursive;
+  font-size: 2.1rem;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.history-subtitle {
+  opacity: 0.75;
+  font-size: 0.95rem;
+  margin-bottom: 26px;
+}
+
+/* ================= LIST ================= */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ================= HISTORY ITEM ================= */
+.history-item {
+  padding: 18px 20px;
+
+  background: rgba(0,0,0,0.35);
+  border-radius: 18px;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.06),
+    inset 0 -6px 16px rgba(0,0,0,0.6);
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.history-item .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-date {
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.history-time {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.history-idea {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+/* ================= STATUS BADGES ================= */
+.status {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.status.pending {
+  background: rgba(255,193,7,0.2);
+  color: #ffc107;
+}
+
+.status.confirmed {
+  background: rgba(0,200,83,0.2);
+  color: #00c853;
+}
+
+.status.rejected {
+  background: rgba(255,23,68,0.2);
+  color: #ff1744;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 600px) {
+  .history-card {
+    padding: 26px 22px;
+  }
+}
+
+/* ================= ROADMAP (ALIGNED) ================= */
+.roadmap {
+  margin: 14px 0 18px;
+}
+
+/* DOT + LINE ROW */
+.road-track {
+  display: flex;
+  align-items: center;
+}
+
+/* DOT */
+.road-node {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  border: 2px solid rgba(255,255,255,0.25);
+  flex-shrink: 0;
+}
+
+/* CONNECTOR */
+.road-connector {
+  flex: 1;
+  height: 2px;
+  background: rgba(255,255,255,0.15);
+  margin: 0 6px;
+}
+
+/* LABELS */
+.road-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.road-labels span {
+  font-size: 0.65rem;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+/* ACTIVE STATES */
+.road-node.active.pending {
+  background: #ffc107;
+  border-color: #ffc107;
+}
+
+.road-node.active.quoted {
+  background: #03a9f4;
+  border-color: #03a9f4;
+}
+
+.road-node.active.confirmed {
+  background: #00c853;
+  border-color: #00c853;
+}
+
+/* ACTIVE LABEL */
+.road-node.active + .road-connector + .road-node.active + .road-connector + .road-node.active ~ .road-labels span {
+  opacity: 0.9;
+}
+
+/* ================= HISTORY IMAGE (FIT) ================= */
+.history-image {
+  margin-top: 12px;
+  width: 100%;
+  max-height: 220px;
+
+  object-fit: contain;        /* 🔥 FIT, DON’T CROP */
+  background: rgba(0,0,0,0.4);
+
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 6px;
+}
+
+.status.pending { color: #ffc107; }
+.status.quoted { color: #03a9f4; }
+.status.confirmed { color: #00c853; }
+.status.rejected { color: #ff1744; }
+
+/* ================= ADMIN REQUESTS ================= */
+.admin-requests {
+  padding: 24px;
+}
+
+.admin-title {
+  font-family: 'Metal Mania', cursive;
+  font-size: 2.1rem;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.admin-subtitle {
+  opacity: 0.75;
+  font-size: 0.95rem;
+  margin-bottom: 24px;
+}
+
+/* ================= LIST ================= */
+.admin-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* ================= CARD ================= */
+.admin-card {
+  padding: 20px;
+
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(14px);
+
+  border-radius: 22px;
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.85),
+    inset 0 0 0 1px rgba(255,255,255,0.08);
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ================= HEADER ================= */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.admin-email {
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
+.admin-meta {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+/* ================= STATUS ================= */
+.admin-status {
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.admin-status.pending {
+  background: rgba(255,193,7,0.2);
+  color: #ffc107;
+}
+
+.admin-status.confirmed {
+  background: rgba(0,200,83,0.2);
+  color: #00c853;
+}
+
+.admin-status.rejected {
+  background: rgba(255,23,68,0.2);
+  color: #ff1744;
+}
+
+/* ================= IDEA ================= */
+.admin-idea {
+  font-size: 0.9rem;
+  line-height: 1.45;
+  opacity: 0.9;
+}
+
+/* ================= IMAGE ================= */
+.admin-image {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  background: rgba(0,0,0,0.4);
+  border-radius: 14px;
+  padding: 6px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+/* ================= ACTIONS ================= */
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.admin-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.admin-actions .approve {
+  background: linear-gradient(135deg, #00c853, #009624);
+}
+
+.admin-actions .reject {
+  background: linear-gradient(135deg, #ff1744, #d50000);
+}
+
+/* ================= QUOTE INPUT ================= */
+.quote-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.2);
+
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.quote-btn {
+  background: linear-gradient(135deg, #03a9f4, #0288d1);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 12px;
+  cursor: pointer;
+  font-weight: 600;
 }

@@ -191,6 +191,7 @@ onAuthStateChanged(auth, async user => {
     return;
   }
 
+  document.querySelector(".auth-card")?.classList.add("auth-success");
   showMenu();
 
   const snap = await getDoc(doc(db, "users", user.uid));
@@ -244,6 +245,23 @@ profileForm.onsubmit = async e => {
 };
 
 /* ================= BOOKING ================= */
+const timeSelect = document.getElementById("time");
+
+function populateTimeSlots(startHour = 11, endHour = 22) {
+  timeSelect.innerHTML = '<option value="">Select time</option>';
+
+  for (let hour = startHour; hour <= endHour; hour++) {
+    const h = String(hour).padStart(2, "0");
+
+    timeSelect.innerHTML += `
+      <option value="${h}:00">${h}:00</option>
+      <option value="${h}:30">${h}:30</option>
+    `;
+  }
+}
+
+populateTimeSlots();
+
 bookingForm.onsubmit = async e => {
   e.preventDefault();
 
@@ -290,11 +308,48 @@ async function loadUser(email) {
   const snap = await getDocs(query(collection(db, "bookings"), where("email", "==", email)));
   snap.forEach(d => {
     const b = d.data();
+    const hasImage = !!b.imageUrl;
     userList.innerHTML += `
-      <div class="booking-card">
-        <strong>${b.date} @ ${b.time}</strong><br>
-        Status: ${b.status}
-      </div>`;
+      <div class="history-item">
+
+        <!-- HEADER -->
+        <div class="row">
+          <span class="history-date">${b.date}</span>
+        </div>
+
+        <!-- TIME -->
+        <div class="history-time">${b.time}</div>
+
+        <!-- IDEA -->
+        <div class="history-idea">${b.idea}</div>
+
+        <!-- IMAGE PREVIEW -->
+        ${hasImage ? `
+          <img src="${b.imageUrl}" class="history-image" alt="Tattoo reference">
+        ` : ""}
+
+        <div class="roadmap">
+
+          <!-- DOT ROW -->
+          <div class="road-track">
+            <div class="road-node ${b.status === 'pending' || b.status === 'quoted' || b.status === 'confirmed' ? 'active pending' : ''}"></div>
+            <div class="road-connector"></div>
+            <div class="road-node ${b.status === 'quoted' || b.status === 'confirmed' ? 'active quoted' : ''}"></div>
+            <div class="road-connector"></div>
+            <div class="road-node ${b.status === 'confirmed' ? 'active confirmed' : ''}"></div>
+          </div>
+
+          <!-- LABEL ROW -->
+          <div class="road-labels">
+            <span>Pending</span>
+            <span>Quote</span>
+            <span>Confirmed</span>
+          </div>
+
+        </div>
+
+      </div>
+    `;
   });
 }
 
@@ -308,13 +363,79 @@ async function loadAdmin() {
     const b = { id: d.id, ...d.data() };
     adminCache.push(b);
     adminListView.innerHTML += `
-      <div class="booking-card">
-        <strong>${b.email}</strong>
-        <p>${b.idea}</p>
-        <button onclick="confirmBooking('${b.id}')">Confirm</button>
-      </div>`;
+      <div class="admin-card">
+
+        <div class="admin-header">
+          <div>
+            <strong class="admin-email">${b.email}</strong>
+            <div class="admin-meta">
+              ${b.date} • ${b.time}
+            </div>
+          </div>
+
+          <span class="admin-status ${b.status}">
+            ${b.status}
+          </span>
+        </div>
+
+        <div class="admin-idea">
+          ${b.idea}
+        </div>
+
+        ${b.imageUrl ? `
+          <img src="${b.imageUrl}" class="admin-image" alt="Tattoo reference">
+        ` : ""}
+
+        <div class="admin-actions">
+
+          ${b.status === "pending" ? `
+            <input
+              type="number"
+              placeholder="Quote ₹"
+              class="quote-input"
+              id="quote-${b.id}"
+            />
+
+            <button class="quote-btn" onclick="sendQuote('${b.id}')">
+              Quote
+            </button>
+          ` : ""}
+
+          ${b.status === "quoted" ? `
+            <button class="approve" onclick="confirmBooking('${b.id}')">
+              Confirm
+            </button>
+          ` : ""}
+
+          ${b.status !== "confirmed" ? `
+            <button class="reject" onclick="rejectBooking('${b.id}')">
+              Reject
+            </button>
+          ` : ""}
+
+        </div>
+
+      </div>
+    `;
   });
 }
+
+window.sendQuote = async (id) => {
+  const input = document.getElementById(`quote-${id}`);
+  const quote = Number(input?.value);
+
+  if (!quote || quote <= 0) {
+    alert("Please enter a valid quote amount");
+    return;
+  }
+
+  await updateDoc(doc(db, "bookings", id), {
+    status: "quoted",
+    quoteAmount: quote
+  });
+
+  loadAdmin();
+};
 
 window.confirmBooking = async id => {
   await updateDoc(doc(db, "bookings", id), { status: "confirmed" });

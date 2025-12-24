@@ -5,6 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>A.T Hell Tattoos | Booking</title>
+  <!-- ================= BASIC SEO ================= -->
+  <meta name="description" content="A.T Hell Tattoos — Elite custom tattoo studio. Book tattoo sessions online, manage appointments, and explore bold custom ink by professional artists.">
+  <meta name="keywords" content="tattoo studio, tattoo booking, custom tattoos, tattoo artist, A.T Hell Tattoos, tattoo appointment">
+  <meta name="author" content="A.T Hell Tattoos">
+  <meta name="robots" content="index, follow">
+
+  <!-- ================= MOBILE / THEME ================= -->
+  <meta name="theme-color" content="#0b0b0b">
+  <meta name="color-scheme" content="dark">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- ================= OPEN GRAPH (SOCIAL SHARE) ================= -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="A.T Hell Tattoos | Book Your Tattoo Session">
+  <meta property="og:description" content="Book elite custom tattoo sessions at A.T Hell Tattoos. Dark art. Bold ink. Professional artists.">
+  <meta property="og:image" content="https://at-hell-tattoo.web.app/images/logo.png">
+  <meta property="og:url" content="https://at-hell-tattoo.web.app">
+  <meta property="og:site_name" content="A.T Hell Tattoos">
+
+  <!-- ================= TWITTER / X ================= -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="A.T Hell Tattoos">
+  <meta name="twitter:description" content="Elite custom tattoo studio. Book your session online.">
+  <meta name="twitter:image" content="https://at-hell-tattoo.web.app/images/logo.png">
+
+  <!-- ================= PERFORMANCE ================= -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="icon" href="./images/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="./images/logo.png">
 
   <!-- GOOGLE FONTS -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -58,6 +90,13 @@
       <img src="./images/logo.png" class="auth-logo" />
 
       <h2 id="authTitle" class="auth-title">STUDIO LOGIN</h2>
+      <!-- INK DRIP DIVIDER -->
+      <div class="ink-divider">
+        <svg viewBox="0 0 300 40" preserveAspectRatio="none">
+          <path d="M0,0 C40,20 60,10 90,22 120,35 150,15 180,25 210,35 240,15 300,20 L300,0 Z"
+                fill="rgba(255,77,77,0.6)" />
+        </svg>
+      </div>
       <p class="auth-subtitle">Enter the underworld</p>
 
       <div id="authError" class="auth-error hidden"></div>
@@ -81,26 +120,67 @@
   </section>
 
   <!-- BOOKING -->
-  <section id="bookingView" class="container hidden">
-    <h2>New Tattoo Request</h2>
+  <section id="bookingView" class="booking-screen hidden">
 
-    <form id="bookingForm">
-      <textarea id="idea" required placeholder="Describe your tattoo idea..."></textarea>
-      <input type="file" id="refImage" accept="image/*" />
+    <div class="booking-card">
 
-      <div class="row">
-        <input type="date" id="date" required />
-        <input type="time" id="time" required />
-      </div>
+      <h2 class="booking-title">Tattoo Request</h2>
+      <p class="booking-subtitle">Tell us your vision. We’ll bring it to life.</p>
 
-      <button id="submitBtn">Submit Request</button>
-    </form>
+      <form id="bookingForm" class="booking-form">
+
+        <!-- IDEA -->
+        <div class="form-block">
+          <label>🖋️ Tattoo Idea</label>
+          <textarea id="idea" required
+            placeholder="Describe your tattoo idea, size, placement, style…"></textarea>
+        </div>
+
+        <!-- IMAGE -->
+        <div class="form-block">
+          <label>🖼️ Reference Image (optional)</label>
+          <input type="file" id="refImage" accept="image/*">
+        </div>
+
+        <!-- DATE & TIME -->
+        <div class="form-row">
+          <div class="form-block">
+            <label>📅 Date</label>
+            <input type="date" id="date" required>
+          </div>
+
+          <div class="form-block">
+            <label>⏰ Time</label>
+            <select id="time" required>
+              <option value="">Select time</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- SUBMIT -->
+        <button class="booking-submit">
+          Submit Tattoo Request
+        </button>
+
+      </form>
+    </div>
+
   </section>
 
   <!-- HISTORY -->
-  <section id="historyView" class="container hidden">
-    <h2>My Booking History</h2>
-    <div id="userList"></div>
+  <section id="historyView" class="history-screen hidden">
+
+    <div class="history-card">
+
+      <h2 class="history-title">My Tattoo History</h2>
+      <p class="history-subtitle">Every mark tells a story.</p>
+
+      <div id="userList" class="history-list">
+        <!-- JS injects cards here -->
+      </div>
+
+    </div>
+
   </section>
 
   <!-- PROFILE -->
@@ -116,14 +196,22 @@
 
   <!-- ADMIN -->
   <section id="adminView" class="container admin-wide hidden">
-    <div id="listView">
-      <h2>Admin Requests</h2>
-      <div id="adminListView" class="admin-grid"></div>
+
+    <div id="listView" class="admin-requests">
+
+      <h2 class="admin-title">Tattoo Requests</h2>
+      <p class="admin-subtitle">Review and respond to incoming requests.</p>
+
+      <div id="adminListView" class="admin-list">
+        <!-- JS injects request cards -->
+      </div>
+
     </div>
 
     <div id="calendarView" class="hidden">
       <div id="calendar"></div>
     </div>
+
   </section>
 
 </main>
