@@ -4,86 +4,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A.T Hell Tattoos | Official Booking</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="./css/style.css">
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 </head>
 <body>
 
-    <a href="https://wa.me/917028122789?text=Hello%20A.T%20Hell%20Tattoos,%20I%20have%20a%20question!"
-       class="whatsapp-float" target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Icon">
-        <span>Chat with Us</span>
+    <button id="menuBtn" class="hamburger-icon hidden" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </button>
+
+    <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <img src="./images/logo.png" alt="Logo" class="sidebar-logo">
+        </div>
+        <ul class="nav-links">
+            <li class="user-link hidden"><a href="#" onclick="navigate('booking')">Book Session</a></li>
+            <li class="user-link hidden"><a href="#" onclick="navigate('history')">My History</a></li>
+            <li class="user-link hidden"><a href="#" onclick="navigate('profile')">Edit Profile</a></li>
+            <li class="admin-link hidden"><a href="#" onclick="navigate('list')">Manage Requests</a></li>
+            <li class="admin-link hidden"><a href="#" onclick="navigate('calendar')">Calendar</a></li>
+            <li class="auth-required hidden"><hr style="border:0; border-top:1px solid #333; margin: 10px 0;"></li>
+            <li class="auth-required hidden"><a href="#" onclick="logout()" class="logout-link">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
+
+    <a href="https://wa.me/917028122789" class="whatsapp-float" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA">
     </a>
 
-    <div id="authView" class="container">
-        <div class="brand">
-            <h1>A.T HELL</h1>
-            <h2 id="authTitle">STUDIO LOGIN</h2>
+    <main id="mainContent">
+        <div id="authView" class="container auth-centered">
+            <div class="brand">
+                <img src="./images/logo.png" alt="A.T Hell" class="main-logo">
+                <h1>A.T HELL</h1>
+                <h2 id="authTitle">STUDIO LOGIN</h2>
+            </div>
+            <div id="authError" class="error-msg hidden"></div>
+            <form id="authForm">
+                <input type="text" id="regName" placeholder="Full Name" class="auth-extra hidden">
+                <input type="tel" id="regPhone" placeholder="Phone Number" class="auth-extra hidden">
+                <input type="email" id="email" placeholder="Email Address" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit" id="authBtn">Enter Studio</button>
+            </form>
+            <p id="toggleAuth" class="toggle-text" onclick="toggleAuthMode()">
+                Don't have an account? <span>Sign Up</span>
+            </p>
         </div>
 
-        <div id="authError" class="error-msg hidden"></div>
-
-        <form id="authForm">
-            <input type="text" id="regName" placeholder="Full Name" class="auth-extra hidden">
-            <input type="tel" id="regPhone" placeholder="Phone Number" class="auth-extra hidden">
-            <input type="email" id="email" placeholder="Email Address" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit" id="authBtn">Enter Studio</button>
-        </form>
-        <p id="toggleAuth" class="toggle-text" onclick="toggleAuthMode()">
-            Don't have an account? <span>Sign Up</span>
-        </p>
-    </div>
-
-    <div id="bookingView" class="container hidden">
-        <header class="view-header">
-            <h2>Book a Session</h2>
-            <button onclick="logout()" class="btn-sm">Logout</button>
-        </header>
-
-        <form id="bookingForm">
-            <label>The Idea</label>
-            <textarea id="idea" placeholder="Describe placement, size, and style..." required></textarea>
-
-            <label>Reference Photo</label>
-            <input type="file" id="refImage" accept="image/*">
-
-            <div class="row">
-                <div class="col">
-                    <label>Preferred Date</label>
-                    <input type="date" id="date" required>
+        <div id="bookingView" class="container hidden">
+            <header class="section-header"><h2>Request a Session</h2></header>
+            <form id="bookingForm">
+                <textarea id="idea" placeholder="Placement, size, style..." required></textarea>
+                <label>Reference Photo</label>
+                <input type="file" id="refImage" accept="image/*">
+                <div class="row">
+                    <div class="col"><input type="date" id="date" required></div>
+                    <div class="col"><input type="time" id="time" required></div>
                 </div>
-                <div class="col">
-                    <label>Preferred Time</label>
-                    <input type="time" id="time" required>
-                </div>
+                <button type="submit" id="submitBtn">Send Request</button>
+            </form>
+            <div id="userHistoryView" class="history-section hidden">
+                <h3 style="margin-top:20px; border-top:1px solid #333; padding-top:15px;">Your History</h3>
+                <div id="userList"></div>
             </div>
-            <button type="submit" id="submitBtn">Request Appointment</button>
-        </form>
-
-        <section class="user-history">
-            <h3>Your Appointment History</h3>
-            <div id="userList"></div>
-        </section>
-    </div>
-
-    <div id="adminView" class="container admin-wide hidden">
-        <header class="view-header">
-            <h2>Artist Dashboard</h2>
-            <div class="nav-btns">
-                <button onclick="showView('list')" class="btn-sm">List View</button>
-                <button onclick="showView('calendar')" class="btn-sm">Calendar</button>
-                <button onclick="logout()" class="btn-sm danger">Logout</button>
-            </div>
-        </header>
-
-        <div id="listView" class="admin-grid"></div>
-
-        <div id="calendarView" class="hidden">
-            <div id="calendar"></div>
         </div>
-    </div>
 
-    <script type="module" src="js/app.js"></script>
+        <div id="profileView" class="container hidden">
+            <header class="section-header"><h2>Edit Profile</h2></header>
+            <div id="profileMsg" class="success-msg hidden">Profile Updated!</div>
+            <form id="profileForm">
+                <label>Name</label><input type="text" id="editName" required>
+                <label>Phone</label><input type="tel" id="editPhone" required>
+                <button type="submit" id="updateBtn">Update Profile</button>
+            </form>
+        </div>
+
+        <div id="adminView" class="container admin-wide hidden">
+            <div id="listView">
+                <header class="section-header"><h2>Active Requests</h2></header>
+                <div id="adminListView" class="admin-grid"></div>
+            </div>
+            <div id="calendarView" class="hidden"><div id="calendar"></div></div>
+        </div>
+    </main>
+
+    <script type="module" src="./js/app.js"></script>
 </body>
 </html>

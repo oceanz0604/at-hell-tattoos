@@ -11,6 +11,7 @@ const firebaseConfig = {
   appId: "1:948527588024:web:2ca07ad29c9b9b5135ca4d",
   measurementId: "G-HG35Q4G92G"
 };
+
 const IMGBB_API_KEY = "c1c3975eab9d02dc16f05d8bd7b17f99";
 const ADMIN_EMAIL = "oceanz.lounge@gmail.com";
 
@@ -18,26 +19,50 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// --- NAVIGATION ---
+window.toggleMenu = () => {
+    document.getElementById('sidebar').classList.toggle('active');
+    document.getElementById('overlay').classList.toggle('active');
+};
+
+window.navigate = (view) => {
+    const views = ['bookingView', 'adminView', 'profileView', 'userHistoryView'];
+    views.forEach(v => document.getElementById(v)?.classList.add('hidden'));
+
+    if (view === 'booking') document.getElementById('bookingView').classList.remove('hidden');
+    if (view === 'history') {
+        document.getElementById('bookingView').classList.remove('hidden');
+        document.getElementById('userHistoryView').classList.remove('hidden');
+    }
+    if (view === 'profile') document.getElementById('profileView').classList.remove('hidden');
+    if (view === 'list' || view === 'calendar') {
+        document.getElementById('adminView').classList.remove('hidden');
+        document.getElementById('listView').classList.toggle('hidden', view !== 'list');
+        document.getElementById('calendarView').classList.toggle('hidden', view !== 'calendar');
+        if (view === 'calendar') renderCalendar();
+    }
+    window.toggleMenu();
+};
+
 // --- AUTH LOGIC ---
 let isSignUpMode = false;
 window.toggleAuthMode = () => {
     isSignUpMode = !isSignUpMode;
     const title = document.getElementById('authTitle');
     const btn = document.getElementById('authBtn');
-    const toggleLink = document.getElementById('toggleAuth');
-    const extraFields = document.querySelectorAll('.auth-extra');
-    document.getElementById('authError').classList.add('hidden');
+    const toggle = document.getElementById('toggleAuth');
+    const extras = document.querySelectorAll('.auth-extra');
 
     if (isSignUpMode) {
         title.innerText = "JOIN THE CREW";
-        btn.innerText = "Create Account";
-        toggleLink.innerHTML = "Already have an account? <span>Login</span>";
-        extraFields.forEach(f => f.classList.remove('hidden'));
+        btn.innerText = "Sign Up";
+        toggle.innerHTML = 'Already have an account? <span>Login</span>';
+        extras.forEach(f => f.classList.remove('hidden'));
     } else {
-        title.innerText = "A.T HELL LOGIN";
+        title.innerText = "STUDIO LOGIN";
         btn.innerText = "Enter Studio";
-        toggleLink.innerHTML = "Don't have an account? <span>Sign Up</span>";
-        extraFields.forEach(f => f.classList.add('hidden'));
+        toggle.innerHTML = 'Don\'t have an account? <span>Sign Up</span>';
+        extras.forEach(f => f.classList.add('hidden'));
     }
 };
 
@@ -45,52 +70,84 @@ document.getElementById('authForm').onsubmit = async (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value;
     const pass = document.getElementById('password').value;
-    const btn = document.getElementById('authBtn');
     const errorDiv = document.getElementById('authError');
-
     errorDiv.classList.add('hidden');
-    btn.disabled = true;
 
     try {
         if (isSignUpMode) {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-            await setDoc(doc(db, "users", userCredential.user.uid), {
+            const res = await createUserWithEmailAndPassword(auth, email, pass);
+            await setDoc(doc(db, "users", res.user.uid), {
                 name: document.getElementById('regName').value,
                 phone: document.getElementById('regPhone').value,
-                email: email,
-                createdAt: new Date()
+                email: email, createdAt: new Date()
             });
         } else {
             await signInWithEmailAndPassword(auth, email, pass);
         }
-    } catch (error) {
+    } catch (err) {
+        errorDiv.innerText = err.message;
         errorDiv.classList.remove('hidden');
-        errorDiv.innerText = error.message;
-    } finally { btn.disabled = false; }
+    }
 };
 
-window.logout = () => signOut(auth);
-
 onAuthStateChanged(auth, (user) => {
+    const menuBtn = document.getElementById('menuBtn');
     document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
+    document.querySelectorAll('.user-link, .admin-link, .auth-required').forEach(l => l.classList.add('hidden'));
+
     if (user) {
+        menuBtn.classList.remove('hidden');
+        document.querySelectorAll('.auth-required').forEach(l => l.classList.remove('hidden'));
         if (user.email === ADMIN_EMAIL) {
+            document.querySelectorAll('.admin-link').forEach(l => l.classList.remove('hidden'));
             document.getElementById('adminView').classList.remove('hidden');
             loadAdminData();
         } else {
+            document.querySelectorAll('.user-link').forEach(l => l.classList.remove('hidden'));
             document.getElementById('bookingView').classList.remove('hidden');
             loadUserData(user.email);
+            loadProfileData();
         }
     } else {
+        menuBtn.classList.add('hidden');
         document.getElementById('authView').classList.remove('hidden');
     }
 });
 
-// --- BOOKING SUBMISSION ---
+window.logout = () => {
+    document.getElementById('sidebar').classList.remove('active');
+    document.getElementById('overlay').classList.remove('active');
+    signOut(auth);
+};
+
+// --- PROFILE ---
+async function loadProfileData() {
+    const user = auth.currentUser;
+    if (!user) return;
+    const snap = await getDocs(query(collection(db, "users"), where("email", "==", user.email)));
+    if (!snap.empty) {
+        const data = snap.docs[0].data();
+        document.getElementById('editName').value = data.name || "";
+        document.getElementById('editPhone').value = data.phone || "";
+    }
+}
+
+document.getElementById('profileForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('profileMsg');
+    await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        name: document.getElementById('editName').value,
+        phone: document.getElementById('editPhone').value
+    });
+    msg.classList.remove('hidden');
+    setTimeout(() => msg.classList.add('hidden'), 3000);
+};
+
+// --- BOOKING ---
 document.getElementById('bookingForm').onsubmit = async (e) => {
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
-    btn.innerText = "Uploading Project..."; btn.disabled = true;
+    btn.innerText = "Processing..."; btn.disabled = true;
 
     let imageUrl = "";
     const file = document.getElementById('refImage').files[0];
@@ -101,51 +158,56 @@ document.getElementById('bookingForm').onsubmit = async (e) => {
             const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
             const json = await res.json();
             imageUrl = json.data.display_url;
-        } catch (err) { console.error("ImgBB upload failed"); }
+        } catch (err) { console.error("ImgBB failed"); }
     }
 
     await addDoc(collection(db, "bookings"), {
-        userId: auth.currentUser.uid,
-        email: auth.currentUser.email,
-        idea: document.getElementById('idea').value,
-        imageUrl: imageUrl,
-        date: document.getElementById('date').value,
-        time: document.getElementById('time').value,
-        status: "pending",
-        quote: "",
-        createdAt: new Date()
+        userId: auth.currentUser.uid, email: auth.currentUser.email,
+        idea: document.getElementById('idea').value, imageUrl: imageUrl,
+        date: document.getElementById('date').value, time: document.getElementById('time').value,
+        status: "pending", quote: "", createdAt: new Date()
     });
     location.reload();
 };
 
-// --- ADMIN FEATURES ---
-let adminBookings = [];
+async function loadUserData(email) {
+    const snap = await getDocs(query(collection(db, "bookings"), where("email", "==", email)));
+    const list = document.getElementById('userList');
+    list.innerHTML = "";
+    const docsArr = [];
+    snap.forEach(d => docsArr.push(d.data()));
+    docsArr.sort((a,b) => b.createdAt - a.createdAt);
+
+    docsArr.forEach(b => {
+        list.innerHTML += `<div class="booking-card ${b.status === 'confirmed' ? 'status-confirmed' : ''}">
+            <p><strong>STATUS:</strong> ${b.status.toUpperCase()}</p>
+            <p><strong>DATE:</strong> ${b.date} @ ${b.time}</p>
+            <p><strong>QUOTE:</strong> ${b.quote ? '$'+b.quote : 'Artist is reviewing...'}</p>
+        </div>`;
+    });
+}
+
+// --- ADMIN ---
+let adminCache = [];
 async function loadAdminData() {
     const snap = await getDocs(query(collection(db, "bookings"), orderBy("createdAt", "desc")));
-    const usersSnap = await getDocs(collection(db, "users"));
-    const userMap = {};
-    usersSnap.forEach(u => userMap[u.id] = u.data());
-
-    const list = document.getElementById('listView');
-    list.innerHTML = "";
-    adminBookings = [];
+    const uSnap = await getDocs(collection(db, "users"));
+    const uMap = {}; uSnap.forEach(u => uMap[u.id] = u.data());
+    const list = document.getElementById('adminListView');
+    list.innerHTML = ""; adminCache = [];
 
     snap.forEach(d => {
-        const b = { id: d.id, ...d.data() };
-        adminBookings.push(b);
-        const uInfo = userMap[b.userId] || { name: "Client", phone: "N/A" };
-
+        const b = { id: d.id, ...d.data() }; adminCache.push(b);
+        const u = uMap[b.userId] || { name: "Client", phone: "N/A" };
         const card = document.createElement('div');
         card.className = `booking-card ${b.status === 'confirmed' ? 'status-confirmed' : ''}`;
         card.innerHTML = `
-            <p><strong>${uInfo.name}</strong> (${b.email})</p>
-            <p><strong>Phone:</strong> ${uInfo.phone}</p>
+            <p><strong>${u.name}</strong> (${u.phone})</p>
             <p>${b.idea}</p>
-            ${b.imageUrl ? `<a href="${b.imageUrl}" target="_blank"><img src="${b.imageUrl}" class="ref-img"></a>` : ''}
+            ${b.imageUrl ? `<img src="${b.imageUrl}" class="ref-img" style="width:100px; cursor:pointer;" onclick="window.open('${b.imageUrl}')">` : ''}
             <div class="row" style="margin-top:10px;">
-                <input type="number" id="q-${d.id}" placeholder="$" value="${b.quote || ''}" style="width:80px; margin:0;">
-                <button onclick="sendQuote('${d.id}')" style="width:auto">Confirm</button>
-                <button onclick="deleteBooking('${d.id}')" class="btn-sm danger">Delete</button>
+                <input type="number" id="q-${b.id}" placeholder="$" value="${b.quote || ''}" style="width:70px; margin:0;">
+                <button onclick="sendQuote('${b.id}')" style="width:auto">Confirm</button>
             </div>
         `;
         list.appendChild(card);
@@ -158,53 +220,12 @@ window.sendQuote = async (id) => {
     loadAdminData();
 };
 
-window.deleteBooking = async (id) => {
-    if(confirm("Delete this session?")) { await deleteDoc(doc(db, "bookings", id)); loadAdminData(); }
-};
-
-window.showView = (v) => {
-    document.getElementById('listView').classList.toggle('hidden', v !== 'list');
-    document.getElementById('calendarView').classList.toggle('hidden', v !== 'calendar');
-    if(v === 'calendar') {
-        const events = adminBookings.map(b => ({ title: `$${b.quote || '??'} - ${b.email}`, start: `${b.date}T${b.time}`, color: b.status === 'confirmed' ? '#4CAF50' : '#ffc107' }));
-        new FullCalendar.Calendar(document.getElementById('calendar'), { events }).render();
-    }
-};
-
-// --- USER FEATURES ---
-async function loadUserData(email) {
-    const q = query(collection(db, "bookings"), where("email", "==", email));
-    const snap = await getDocs(q);
-    const list = document.getElementById('userList');
-    list.innerHTML = "";
-
-    const docsArr = [];
-    snap.forEach(d => docsArr.push(d.data()));
-    docsArr.sort((a,b) => b.createdAt - a.createdAt);
-
-    docsArr.forEach(b => {
-        const isConfirmed = b.status === 'confirmed';
-        list.innerHTML += `
-            <div class="booking-card ${isConfirmed ? 'status-confirmed' : ''}">
-                <p><strong>STATUS:</strong> ${b.status.toUpperCase()}</p>
-                <p><strong>DATE:</strong> ${b.date} @ ${b.time}</p>
-                <p><strong>QUOTE:</strong> ${b.quote ? '$'+b.quote : 'Artist is reviewing...'}</p>
-                ${isConfirmed ? `
-                    <button class="btn-share" onclick="shareBooking('${b.date}', '${b.time}')">
-                        Share Status
-                    </button>` : ''}
-            </div>`;
-    });
+function renderCalendar() {
+    const events = adminCache.map(b => ({
+        title: `$${b.quote || '??'} - ${b.email}`,
+        start: `${b.date}T${b.time}`,
+        color: b.status === 'confirmed' ? '#4CAF50' : '#ffc107'
+    }));
+    const calendarEl = document.getElementById('calendar');
+    new FullCalendar.Calendar(calendarEl, { initialView: 'daygridmonth', events }).render();
 }
-
-window.shareBooking = async (date, time) => {
-    const shareData = {
-        title: 'A.T Hell Tattoos',
-        text: `Got my session booked at A.T Hell Tattoos for ${date} at ${time}! 🔥`,
-        url: window.location.origin
-    };
-    try {
-        if (navigator.share) await navigator.share(shareData);
-        else alert("Link copied to clipboard!");
-    } catch (err) { console.log(err); }
-};
