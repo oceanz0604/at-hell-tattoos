@@ -1,0 +1,155 @@
+@import url('https://fonts.googleapis.com/css2?family=Metal+Mania&family=Inter:wght@400;700&display=swap');
+
+:root {
+    --primary: #ff4d4d;
+    --bg: #0a0a0a;
+    --card: #141414;
+    --text: #ffffff;
+    --text-dim: #888;
+    --border: #2a2a2a;
+    --error: #ff3333;
+    --whatsapp: #25D366;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    background: var(--card);
+    width: 100%;
+    max-width: 480px;
+    padding: 2.5rem;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    height: fit-content;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* --- NEON LOGO --- */
+.brand { text-align: center; margin-bottom: 2rem; }
+.brand h1 {
+    font-family: 'Metal Mania', cursive;
+    font-size: 3.5rem;
+    color: #fff;
+    margin: 0;
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--primary), 0 0 40px var(--primary), 0 0 80px var(--primary);
+    animation: neon-flicker 1.5s infinite alternate;
+}
+
+@keyframes neon-flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--primary), 0 0 40px var(--primary), 0 0 80px var(--primary);
+        opacity: 1;
+    }
+    20%, 24%, 55% { text-shadow: none; opacity: 0.5; }
+}
+
+/* --- UI ELEMENTS --- */
+.error-msg {
+    color: var(--error);
+    background: rgba(255, 51, 51, 0.1);
+    border: 1px solid var(--error);
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.whatsapp-float {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--whatsapp);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    transition: transform 0.3s;
+}
+
+.whatsapp-float:hover { transform: scale(1.05); }
+.whatsapp-float img { width: 25px; height: 25px; }
+
+input, textarea {
+    width: 100%;
+    background: #1f1f1f;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    color: white;
+    margin-bottom: 1.2rem;
+    box-sizing: border-box;
+}
+
+label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; display: block; margin-bottom: 5px; }
+
+button {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-share {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 8px 15px;
+    border-radius: 6px;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+    width: fit-content;
+}
+
+.btn-share:hover { background: var(--primary); color: white; }
+
+.hidden { display: none !important; }
+.admin-wide { max-width: 1000px; }
+.view-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.btn-sm { width: auto; padding: 6px 15px; font-size: 0.8rem; background: #222; border: 1px solid var(--border); color: white; border-radius: 5px; cursor: pointer; }
+.danger { color: var(--primary); border-color: var(--primary); }
+
+.row { display: flex; gap: 15px; }
+.col { flex: 1; }
+
+.booking-card {
+    background: #1c1c1c;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 15px;
+    border-left: 5px solid #ffc107;
+}
+
+.status-confirmed { border-left-color: #4CAF50; }
+.ref-img { width: 100%; max-width: 120px; border-radius: 6px; margin: 10px 0; border: 1px solid var(--border); cursor: pointer; }
+
+.toggle-text { text-align: center; margin-top: 1rem; font-size: 0.9rem; cursor: pointer; }
+.toggle-text span { color: var(--primary); text-decoration: underline; }
+
+.admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+#calendar { background: white; color: black; border-radius: 12px; padding: 10px; }
